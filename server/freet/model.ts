@@ -1,6 +1,7 @@
-import type {Types} from 'mongoose';
+import type {Types, PopulatedDoc, Document} from 'mongoose';
 import {Schema, model} from 'mongoose';
 import type {User} from '../user/model';
+import type {Community} from '../community/model';
 
 /**
  * This file defines the properties stored in a Freet
@@ -14,6 +15,8 @@ export type Freet = {
   dateCreated: Date;
   content: string;
   dateModified: Date;
+  community: Types.ObjectId;
+  parent: Types.ObjectId;
 };
 
 export type PopulatedFreet = {
@@ -22,6 +25,8 @@ export type PopulatedFreet = {
   dateCreated: Date;
   content: string;
   dateModified: Date;
+  community: Community;
+  parent: Freet;
 };
 
 // Mongoose schema definition for interfacing with a MongoDB table
@@ -49,6 +54,18 @@ const FreetSchema = new Schema<Freet>({
   dateModified: {
     type: Date,
     required: true
+  },
+  // The community the freet might be a part of
+  community: {
+    type: Schema.Types.ObjectId,
+    required: false,
+    ref: 'Community'
+  },
+  // The parent the freet might be replying to
+  parent: {
+    type: Schema.Types.ObjectId,
+    required: false,
+    ref: 'Freet'
   }
 });
 

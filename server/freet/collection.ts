@@ -2,6 +2,8 @@ import type {HydratedDocument, Types} from 'mongoose';
 import type {Freet} from './model';
 import FreetModel from './model';
 import UserCollection from '../user/collection';
+import CommunityCollection from '../community/collection';
+import SafetyCollection from '../safety/collection';
 
 /**
  * This files contains a class that has the functionality to explore freets
@@ -17,18 +19,55 @@ class FreetCollection {
    *
    * @param {string} authorId - The id of the author of the freet
    * @param {string} content - The id of the content of the freet
+   * @param {string} communityName - Name of community freet will be posted in (empty string if none)
+   * @param {string} parentId - The id of the potential parent freet
+   * @param {string} safetyLevel - The level of safety of the freet
    * @return {Promise<HydratedDocument<Freet>>} - The newly created freet
    */
-  static async addOne(authorId: Types.ObjectId | string, content: string): Promise<HydratedDocument<Freet>> {
+   static async addOne(authorId: Types.ObjectId | string, content: string, communityName: string, parentId: Types.ObjectId | string, safetyLevel: string): Promise<HydratedDocument<Freet>> {
     const date = new Date();
-    const freet = new FreetModel({
-      authorId,
-      dateCreated: date,
-      content,
-      dateModified: date
-    });
+    const community = await CommunityCollection.findOneByName(communityName);
+    let freet;
+    if (community) {
+      if (parentId) {
+        freet = new FreetModel({
+          authorId,
+          dateCreated: date,
+          content,
+          dateModified: date,
+          community: community._id,
+          parent: parentId
+        });
+      } else {
+        freet = new FreetModel({
+          authorId,
+          dateCreated: date,
+          content,
+          dateModified: date,
+          community: community._id,
+        });
+      }
+    } else {
+      if (parentId) {
+        freet = new FreetModel({
+          authorId,
+          dateCreated: date,
+          content,
+          dateModified: date,
+          parent: parentId
+        });
+      } else {
+        freet = new FreetModel({
+          authorId,
+          dateCreated: date,
+          content,
+          dateModified: date
+        });
+      }
+    }
     await freet.save(); // Saves freet to MongoDB
-    return freet.populate('authorId');
+    await SafetyCollection.addOne(freet._id, safetyLevel);
+    return freet.populate('authorId community');
   }
 
   /**
@@ -38,7 +77,7 @@ class FreetCollection {
    * @return {Promise<HydratedDocument<Freet>> | Promise<null> } - The freet with the given freetId, if any
    */
   static async findOne(freetId: Types.ObjectId | string): Promise<HydratedDocument<Freet>> {
-    return FreetModel.findOne({_id: freetId}).populate('authorId');
+    return FreetModel.findOne({_id: freetId}).populate('authorId community');
   }
 
   /**
@@ -48,7 +87,7 @@ class FreetCollection {
    */
   static async findAll(): Promise<Array<HydratedDocument<Freet>>> {
     // Retrieves freets and sorts them from most to least recent
-    return FreetModel.find({}).sort({dateModified: -1}).populate('authorId');
+    return FreetModel.find({}).sort({dateModified: -1}).populate('authorId community');
   }
 
   /**
@@ -59,7 +98,12 @@ class FreetCollection {
    */
   static async findAllByUsername(username: string): Promise<Array<HydratedDocument<Freet>>> {
     const author = await UserCollection.findOneByUsername(username);
-    return FreetModel.find({authorId: author._id}).sort({dateModified: -1}).populate('authorId');
+    return FreetModel.find({authorId: author._id}).sort({dateModified: -1}).populate('authorId community');
+  }
+
+  static async findAllByCommunityName(communityName: string): Promise<Array<HydratedDocument<Freet>>> {
+    const community = await CommunityCollection.findOneByName(communityName);
+    return FreetModel.find({community: community._id}).sort({dateModified: -1}).populate('authorId community');
   }
 
   /**
@@ -74,7 +118,7 @@ class FreetCollection {
     freet.content = content;
     freet.dateModified = new Date();
     await freet.save();
-    return freet.populate('authorId');
+    return freet.populate('authorId community');
   }
 
   /**

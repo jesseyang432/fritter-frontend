@@ -8,7 +8,12 @@ import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import * as userValidator from '../server/user/middleware';
 import {userRouter} from '../server/user/router';
+import {communityRouter} from '../server/community/router';
 import {freetRouter} from '../server/freet/router';
+import {upvoteRouter} from '../server/upvote/router';
+import {downvoteRouter} from '../server/downvote/router';
+import {reputationRouter} from '../server/reputation/router';
+import {safetyRouter} from '../server/safety/router';
 import MongoStore from 'connect-mongo';
 
 // Load environmental variables
@@ -69,7 +74,12 @@ app.use(userValidator.isCurrentSessionUserExists);
 
 // Add routers from routes folder
 app.use('/api/users', userRouter);
+app.use('/api/communities', communityRouter);
 app.use('/api/freets', freetRouter);
+app.use('/api/upvotes', upvoteRouter);
+app.use('/api/downvotes', downvoteRouter);
+app.use('/api/reputation', reputationRouter);
+app.use('/api/safety', safetyRouter);
 
 // Catch all the other routes and display error message
 app.all('*', (req: Request, res: Response) => {

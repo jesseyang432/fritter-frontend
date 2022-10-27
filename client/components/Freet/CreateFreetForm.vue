@@ -12,7 +12,10 @@ export default {
       method: 'POST',
       hasBody: true,
       fields: [
-        {id: 'content', label: 'Content', value: ''}
+        {id: 'content', label: 'Content', value: ''},
+        {id: 'community', label: 'Community', value: ''},
+        {id: 'parentId', label: 'Parent ID', value: ''},
+        {id: 'safetyLevel', label: 'Safety Level (SFW, NSFW)', value: 'None'},
       ],
       title: 'Create a freet',
       refreshFreets: true,

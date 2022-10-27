@@ -3,6 +3,7 @@ import express from 'express';
 import FreetCollection from './collection';
 import * as userValidator from '../user/middleware';
 import * as freetValidator from '../freet/middleware';
+import * as communityValidator from '../community/middleware';
 import * as util from './util';
 
 const router = express.Router();
@@ -49,13 +50,46 @@ router.get(
 );
 
 /**
+ * Get freets by community.
+ *
+ * @name GET /api/freets/community/:communityName
+ *
+ * @param {string} community - the name of the community
+ * @return {FreetResponse[]} - An array of freets created by user with id, authorId
+ * @throws {403} - If user is not logged in
+ * @throws {404} - if community is not a recognized name of any community
+ * @throws {403} - if user is not a member of the community
+ *
+ */
+ router.get(
+  '/community/:communityName?',
+  [
+    userValidator.isUserLoggedIn,
+    communityValidator.isCommunityExistsByName,
+    communityValidator.isUserInCommunityByName
+  ],
+  async (req: Request, res: Response) => {
+    const communityFreets = await FreetCollection.findAllByCommunityName(req.params.communityName);
+    const response = communityFreets.map(util.constructFreetResponse);
+    res.status(200).json(response);
+  }
+);
+
+/**
  * Create a new freet.
  *
  * @name POST /api/freets
  *
  * @param {string} content - The content of the freet
+ * @param {string} community - The name of the community to post in
+ * @param {string} parentId - The parent freet that this one might reply to
+ * @param {string} safetyLevel - The level of safety of the freet
  * @return {FreetResponse} - The created freet
  * @throws {403} - If the user is not logged in
+ * @throws {404} - If the community is not a recognized name of any community
+ * @throws {403} - If the user is not a member of the community
+ * @throws {404} - If parentId is not a valid Freet id
+ * @throws {409} - If parentId is not a Freet within community `community`
  * @throws {400} - If the freet content is empty or a stream of empty spaces
  * @throws {413} - If the freet content is more than 140 characters long
  */
@@ -63,11 +97,13 @@ router.post(
   '/',
   [
     userValidator.isUserLoggedIn,
+    communityValidator.isUserPostingWronglyCommunity,
+    freetValidator.isRespondingToValidParent,
     freetValidator.isValidFreetContent
   ],
   async (req: Request, res: Response) => {
     const userId = (req.session.userId as string) ?? ''; // Will not be an empty string since its validated in isUserLoggedIn
-    const freet = await FreetCollection.addOne(userId, req.body.content);
+    const freet = await FreetCollection.addOne(userId, req.body.content, req.body.community, req.body.parentId, req.body.safetyLevel);
 
     res.status(201).json({
       message: 'Your freet was created successfully.',
