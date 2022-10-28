@@ -68,7 +68,7 @@ export default {
   components: {FreetComponent, GetFreetsForm, CreateFreetForm},
   mounted() {
     this.$store.commit('updateCommunity', null);
-    console.log(this.$store.state.community);
+    this.$refs.getFreetsForm.submit();
   }
 };
 </script>

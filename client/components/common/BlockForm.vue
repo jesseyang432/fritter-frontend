@@ -59,6 +59,7 @@ export default {
       url: '', // Url to submit form to
       method: 'GET', // Form request method
       hasBody: false, // Whether or not form request has a body
+      isFreet: false, // Whether the form is for creating a freet
       setUsername: false, // Whether or not stored username should be updated after form submission
       refreshFreets: false, // Whether or not stored freets should be updated after form submission
       alerts: {}, // Displays success/error messages encountered during form submission
@@ -76,13 +77,23 @@ export default {
         credentials: 'same-origin' // Sends express-session credentials with request
       };
       if (this.hasBody) {
-        options.body = JSON.stringify(Object.fromEntries(
-          this.fields.map(field => {
+        const optionsEntries = this.fields.map(field => {
             const {id, value} = field;
             field.value = '';
             return [id, value];
-          })
-        ));
+          });
+        if (this.isFreet) {
+          optionsEntries.push(['community', this.community]);
+          optionsEntries.push(['parentId', this.parentId]);
+        }
+        options.body = JSON.stringify(Object.fromEntries(optionsEntries));
+        // options.body = JSON.stringify(Object.fromEntries(
+        //   this.fields.map(field => {
+        //     const {id, value} = field;
+        //     field.value = '';
+        //     return [id, value];
+        //   })
+        // ));
       }
 
       try {

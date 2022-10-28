@@ -6,15 +6,24 @@ import BlockForm from '@/components/common/BlockForm.vue';
 export default {
   name: 'CreateFreetForm',
   mixins: [BlockForm],
+  props: {
+    community: {
+      type: String,
+      default: ''
+    },
+    parentId: {
+      type: String,
+      default: ''
+    }
+  },
   data() {
     return {
       url: '/api/freets',
       method: 'POST',
       hasBody: true,
+      isFreet: true,
       fields: [
         {id: 'content', label: 'Content', value: ''},
-        {id: 'community', label: 'Community', value: ''},
-        {id: 'parentId', label: 'Parent ID', value: ''},
         {id: 'safetyLevel', label: 'Safety Level (SFW, NSFW)', value: 'None'},
       ],
       title: 'Create a freet',

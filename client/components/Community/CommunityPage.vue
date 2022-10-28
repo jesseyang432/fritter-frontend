@@ -13,13 +13,16 @@
         </header>
       </section>
       <section v-else>
-        <header>
-          <div class="left">
-            <h2>
-              Community: {{ $route.params.name }}
-            </h2>
-          </div>
-        </header>
+        <section>
+          <header>
+            <div class="left">
+              <h2>
+                Community: {{ $route.params.name }}
+              </h2>
+            </div>
+          </header>
+          <CreateFreetForm :community="$route.params.name"/>
+        </section>
         <section
           v-if="$store.state.freets.length"
         >
@@ -34,12 +37,12 @@
   </template>
   
   <script>
-  import CommunityComponent from '@/components/Community/CommunityComponent.vue';
+  import CreateFreetForm from '@/components/Freet/CreateFreetForm.vue';
   import FreetComponent from '@/components/Freet/FreetComponent.vue';
   
   export default {
     name: 'CommunityPage',
-    components: {CommunityComponent, FreetComponent},
+    components: {CreateFreetForm, FreetComponent},
     data() {
         return {
             loading: true,
