@@ -6,7 +6,6 @@
         <header>
           <h2>Welcome @{{ $store.state.username }}</h2>
         </header>
-        <CreateFreetForm />
       </section>
       <section v-else>
         <header>
@@ -69,7 +68,16 @@
             const url = '/api/communities';
             const res = await fetch(url).then(async r => r.json());
             this.communities = res;
-            console.log(this.communities);
+            const myCommunities = [];
+            const otherCommunities = [];
+            for (const community of this.communities) {
+                if (this.$store.state.username && community.members.includes(this.$store.state.username)) {
+                    myCommunities.push(community);
+                } else {
+                    otherCommunities.push(community);
+                }
+            }
+            this.communities = myCommunities.concat(otherCommunities);
             this.loading = false;
         }
     },
