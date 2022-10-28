@@ -33,6 +33,7 @@
         method: 'GET', // Form request method
         hasBody: false, // Whether or not form request has a body
         alerts: {}, // Displays success/error messages encountered during form submission
+        asyncCallback: false, // Whether or not the callback is async
         callback: null // Function to run after successful form submission
       };
     },
@@ -62,9 +63,13 @@
             const res = await r.json();
             throw new Error(res.error);
           }
-  
+
           if (this.callback) {
-            this.callback();
+            if (this.asyncCallback) {
+              await this.callback();
+            } else {
+              this.callback();
+            }
           }
         } catch (e) {
           this.$set(this.alerts, e, 'error');

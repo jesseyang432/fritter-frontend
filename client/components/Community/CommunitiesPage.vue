@@ -27,16 +27,16 @@
             </article>
         </section>
         <section
-          v-if="communities.length"
+          v-if="$store.state.communities.length"
         >
           <CommunityComponent
-            v-for="community in myCommunities"
+            v-for="community in $store.state.myCommunities"
             :key="community._id"
             :community="community"
             :inCommunity="true"
           />
           <CommunityComponent
-            v-for="community in otherCommunities"
+            v-for="community in $store.state.otherCommunities"
             :key="community._id"
             :community="community"
             :inCommunity="false"
@@ -61,9 +61,9 @@
     data() {
         return {
             loading: true,
-            communities: [],
-            myCommunities: [],
-            otherCommunities: [],
+            // communities: [],
+            // myCommunities: [],
+            // otherCommunities: [],
         };
     },
     async mounted() {
@@ -71,24 +71,21 @@
     },
     methods: {
         async getCommunities() {
-            const url = '/api/communities';
-            const res = await fetch(url).then(async r => r.json());
-            this.communities = res;
-            for (const community of this.communities) {
-                if (this.$store.state.username && community.members.includes(this.$store.state.username)) {
-                    this.myCommunities.push(community);
-                } else {
-                    this.otherCommunities.push(community);
-                }
-            }
-            this.communities = this.myCommunities.concat(this.otherCommunities);
+            await this.$store.commit('refreshCommunities');
+            // const url = '/api/communities';
+            // const res = await fetch(url).then(async r => r.json());
+            // this.communities = res;
+            // for (const community of this.communities) {
+            //     if (this.$store.state.username && community.members.includes(this.$store.state.username)) {
+            //         this.myCommunities.push(community);
+            //     } else {
+            //         this.otherCommunities.push(community);
+            //     }
+            // }
+            // this.communities = this.myCommunities.concat(this.otherCommunities);
             this.loading = false;
         }
     },
-    // components: {FreetComponent, GetFreetsForm, CreateFreetForm},
-    // mounted() {
-    //   this.$refs.getFreetsForm.submit();
-    // }
   };
   </script>
   

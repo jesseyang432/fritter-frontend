@@ -22,6 +22,7 @@ export default {
         const message = 'Successfully joined!';
         this.$set(this.alerts, message, 'success');
         setTimeout(() => this.$delete(this.alerts, message), 3000);
+        this.$store.commit('refreshCommunities');
       }
     };
   }
