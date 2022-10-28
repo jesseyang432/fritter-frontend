@@ -9,7 +9,7 @@ import * as util from './util';
 const router = express.Router();
 
 /**
- * Get all the freets
+ * Get all the communities
  *
  * @name GET /api/communities
  *
@@ -20,6 +20,25 @@ router.get(
   async (req: Request, res: Response) => {
     const allCommunities = await CommunityCollection.findAll();
     const response = allCommunities.map(util.constructCommunityResponse);
+    res.status(200).json(response);
+  }
+);
+
+/**
+ * Get a community by name
+ *
+ * @name GET /api/communities/:communityName
+ *
+ * @return {CommunityResponse} - A community
+ */
+ router.get(
+  '/:communityName?',
+  [
+    communityValidator.isCommunityExistsByName
+  ],
+  async (req: Request, res: Response) => {
+    const community = await CommunityCollection.findOneByName(req.params.communityName);
+    const response = util.constructCommunityResponse(community);
     res.status(200).json(response);
   }
 );

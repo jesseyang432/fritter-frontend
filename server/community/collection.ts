@@ -52,7 +52,7 @@ class CommunityCollection {
    * @return {Promise<HydratedDocument<Community>> | Promise<null>} - The community with the given name, if any
    */
   static async findOneByName(name: string): Promise<HydratedDocument<Community>> {
-    return CommunityModel.findOne({name: new RegExp(`^${name.trim()}$`, 'i')});
+    return CommunityModel.findOne({name: new RegExp(`^${name.trim()}$`, 'i')}).populate('members creator');
   }
 
   /**

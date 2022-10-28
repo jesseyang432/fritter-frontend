@@ -7,7 +7,9 @@
   >
     <header>
       <h3 class="name">
+        <router-link :to="`community/${community.name}`">
         {{ community.name }}
+        </router-link>
       </h3>
     </header>
     <section class="info">
