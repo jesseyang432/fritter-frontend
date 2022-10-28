@@ -30,9 +30,16 @@
           v-if="communities.length"
         >
           <CommunityComponent
-            v-for="community in communities"
+            v-for="community in myCommunities"
             :key="community._id"
             :community="community"
+            :inCommunity="true"
+          />
+          <CommunityComponent
+            v-for="community in otherCommunities"
+            :key="community._id"
+            :community="community"
+            :inCommunity="false"
           />
         </section>
         <article
@@ -55,6 +62,8 @@
         return {
             loading: true,
             communities: [],
+            myCommunities: [],
+            otherCommunities: [],
         };
     },
     async mounted() {
@@ -65,16 +74,14 @@
             const url = '/api/communities';
             const res = await fetch(url).then(async r => r.json());
             this.communities = res;
-            const myCommunities = [];
-            const otherCommunities = [];
             for (const community of this.communities) {
                 if (this.$store.state.username && community.members.includes(this.$store.state.username)) {
-                    myCommunities.push(community);
+                    this.myCommunities.push(community);
                 } else {
-                    otherCommunities.push(community);
+                    this.otherCommunities.push(community);
                 }
             }
-            this.communities = myCommunities.concat(otherCommunities);
+            this.communities = this.myCommunities.concat(this.otherCommunities);
             this.loading = false;
         }
     },

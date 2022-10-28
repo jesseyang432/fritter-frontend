@@ -20,6 +20,12 @@
         Number of Members: {{ community.members.length }}
       </p>
     </section>
+    <section v-if="inCommunity">
+      <LeaveCommunityForm :communityId="community._id" />
+    </section>
+    <section v-else>
+      <JoinCommunityForm :communityId="community._id" />
+    </section>
     <section class="alerts">
       <article
         v-for="(status, alert, index) in alerts"
@@ -33,12 +39,21 @@
 </template>
 
 <script>
+import JoinCommunityForm from '@/components/Community/JoinCommunityForm.vue';
+import LeaveCommunityForm from '@/components/Community/LeaveCommunityForm.vue';
+
 export default {
   name: 'CommunityComponent',
+  components: {JoinCommunityForm, LeaveCommunityForm},
   props: {
     // Data from the stored community
     community: {
       type: Object,
+      required: true
+    },
+    // Whether the user is in the community
+    inCommunity: {
+      type: Boolean,
       required: true
     }
   },
