@@ -12,6 +12,7 @@ const store = new Vuex.Store({
     filter: null, // Username to filter shown freets by (null = show all)
     freets: [], // All freets created in the app
     username: null, // Username of the logged in user
+    community: null, // Name of the community currently being viewed
     alerts: {} // global success/error messages encountered during submissions to non-visible forms
   },
   mutations: {
@@ -45,11 +46,18 @@ const store = new Vuex.Store({
        */
       state.freets = freets;
     },
+    updateCommunity(state, community) {
+      /**
+       * Update the current community (null if none)
+       * @param community - Name of community
+       */
+      state.community = community;
+    },
     async refreshFreets(state) {
       /**
        * Request the server for the currently available freets.
        */
-      const url = state.filter ? `/api/users/${state.filter}/freets` : '/api/freets';
+      const url = state.community ? `api/freets/community/${state.community}` : (state.filter ? `/api/users/${state.filter}/freets` : '/api/freets');
       const res = await fetch(url).then(async r => r.json());
       state.freets = res;
     }

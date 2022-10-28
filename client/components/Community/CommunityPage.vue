@@ -21,10 +21,10 @@
           </div>
         </header>
         <section
-          v-if="freets.length"
+          v-if="$store.state.freets.length"
         >
           <FreetComponent
-            v-for="freet in freets"
+            v-for="freet in $store.state.freets"
             :key="freet._id"
             :freet="freet"
           />
@@ -48,6 +48,10 @@
             freets: [],
         };
     },
+    beforeMount() {
+      this.$store.commit('updateCommunity', this.$route.params.name);
+      console.log(this.$store.state.community);
+    },
     async mounted() {
         await this.getCommunity();
         this.loading = false;
@@ -65,7 +69,7 @@
         async getCommunityFreets() {
             const url = `/api/freets/community/${this.$route.params.name}`;
             const res = await fetch(url).then(async r => r.json());
-            this.freets = res;
+            this.$store.commit('updateFreets', res);
         }
     },
   };
