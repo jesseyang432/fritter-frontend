@@ -19,8 +19,10 @@ export default {
           throw new Error(res.error);
         }
 
+        const globalFreets = res.filter((freet) => !freet.community);
+        
         this.$store.commit('updateFilter', this.value);
-        this.$store.commit('updateFreets', res);
+        this.$store.commit('updateFreets', globalFreets);
       } catch (e) {
         if (this.value === this.$store.state.filter) {
           // This section triggers if you filter to a user but they

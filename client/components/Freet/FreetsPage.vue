@@ -25,7 +25,7 @@
       <header>
         <div class="left">
           <h2>
-            Viewing all freets
+            Viewing global freets
             <span v-if="$store.state.filter">
               by @{{ $store.state.filter }}
             </span>
