@@ -14,9 +14,7 @@ import CommunityCollection from '../community/collection';
   }
 
   res.status(409).json({
-    error: {
-      name: 'A community with this name already exists.'
-    }
+    error: 'A community with this name already exists.'
   });
 };
 

@@ -2,24 +2,6 @@
 
 <template>
     <main>
-      <section v-if="$store.state.username">
-        <header>
-          <h2>Welcome @{{ $store.state.username }}</h2>
-        </header>
-      </section>
-      <section v-else>
-        <header>
-          <h2>Welcome to Fritter!</h2>
-        </header>
-        <article>
-          <h3>
-            <router-link to="/login">
-              Sign in
-            </router-link>
-            to create, edit, and delete freets.
-          </h3>
-        </article>
-      </section>
       <section>
         <header>
           <div class="left">
@@ -28,6 +10,22 @@
             </h2>
           </div>
         </header>
+        <section v-if="$store.state.username">
+            <header>
+            <h3>Welcome @{{ $store.state.username }}</h3>
+            </header>
+            <CreateCommunityForm />
+        </section>
+        <section v-else>
+            <article>
+            <h3>
+                <router-link to="/login">
+                Sign in
+                </router-link>
+                to create, join, leave, and view communities.
+            </h3>
+            </article>
+        </section>
         <section
           v-if="communities.length"
         >
@@ -48,12 +46,11 @@
   
   <script>
   import CommunityComponent from '@/components/Community/CommunityComponent.vue';
-  import CreateFreetForm from '@/components/Freet/CreateFreetForm.vue';
-  import GetFreetsForm from '@/components/Freet/GetFreetsForm.vue';
+  import CreateCommunityForm from '@/components/Community/CreateCommunityForm.vue';
   
   export default {
     name: 'CommunitiesPage',
-    components: {CommunityComponent},
+    components: {CommunityComponent, CreateCommunityForm},
     data() {
         return {
             loading: true,
