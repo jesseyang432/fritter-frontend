@@ -38,7 +38,7 @@ const isFreetExists = async (req: Request, res: Response, next: NextFunction) =>
     return;
   }
   const community = await CommunityCollection.findOneByName(req.body.community);
-  if ((parentFreet.community && !community) || parentFreet.community !== community._id) {
+  if ((parentFreet.community && !community) || (community && parentFreet.community !== community._id)) {
     res.status(409).json({
       error: 'Freet being posted and Freet it replies to are in differing communities.'
     });
