@@ -6,74 +6,85 @@
     class="freet"
     v-bind:id="this.freet._id"
   >
-    <header>
-      <h3 class="author">
-        @{{ freet.author }}
-      </h3>
-      <div
-        v-if="$store.state.username === freet.author"
-        class="actions"
-      >
-        <button
-          v-if="editing"
-          @click="submitEdit"
-        >
-          ✅ Save changes
-        </button>
-        <button
-          v-if="editing"
-          @click="stopEditing"
-        >
-          🚫 Discard changes
-        </button>
-        <button
-          v-if="!editing"
-          @click="startEditing"
-        >
-          ✏️ Edit
-        </button>
-        <button @click="deleteFreet">
-          🗑️ Delete
-        </button>
-      </div>
-    </header>
-    <p
-      v-if="this.parent"
-    >
-      <b>Replying to </b>
-      <em>
-        <a v-bind:href="'#' + this.parent._id">
-          "{{ this.parent.content.length > 30 ? this.parent.content.slice(0, 30) + "..." : this.parent.content }}"
-        </a>
-      </em>
-    </p>
-    <textarea
-      v-if="editing"
-      class="content"
-      :value="draft"
-      @input="draft = $event.target.value"
-    />
-    <p
-      v-else
-      class="content"
-    >
-      {{ freet.content }}
-    </p>
-    <p class="info">
-      Posted at {{ freet.dateModified }}
-      <i v-if="freet.edited">(edited)</i>
-    </p>
-    <section class="alerts">
-      <article
-        v-for="(status, alert, index) in alerts"
-        :key="index"
-        :class="status"
-      >
-        <p>{{ alert }}</p>
-      </article>
+    <section v-if="loading">
+      <header>
+        <h2>Loading...</h2>
+      </header>
     </section>
+    <section v-else>
+      <header>
+        <h3 class="author">
+          @{{ freet.author }}
+        </h3>
+        <div
+          v-if="$store.state.username === freet.author"
+          class="actions"
+        >
+          <button
+            v-if="editing"
+            @click="submitEdit"
+          >
+            ✅ Save changes
+          </button>
+          <button
+            v-if="editing"
+            @click="stopEditing"
+          >
+            🚫 Discard changes
+          </button>
+          <button
+            v-if="!editing"
+            @click="startEditing"
+          >
+            ✏️ Edit
+          </button>
+          <button @click="deleteFreet">
+            🗑️ Delete
+          </button>
+        </div>
+      </header>
+      <p
+        v-if="this.parent"
+      >
+        <b>Replying to </b>
+        <em>
+          <a v-bind:href="'#' + this.parent._id">
+            "{{ this.parent.content.length > 30 ? this.parent.content.slice(0, 30) + "..." : this.parent.content }}"
+          </a>
+        </em>
+      </p>
+      <textarea
+        v-if="editing"
+        class="content"
+        :value="draft"
+        @input="draft = $event.target.value"
+      />
+      <p
+        v-else
+        class="content"
+      >
+        {{ freet.content }}
+      </p>
+      <p class="info">
+        Posted at {{ freet.dateModified }}
+        <i v-if="freet.edited">(edited)</i>
+      </p>
+      <section class="alerts">
+        <article
+          v-for="(status, alert, index) in alerts"
+          :key="index"
+          :class="status"
+        >
+          <p>{{ alert }}</p>
+        </article>
+      </section>
 
-  <ReplyFreetForm :community="this.$store.state.community" :parent="this.freet._id"/>
+      Num Upvotes: {{this.numUpvotes}}
+      Num Downvotes: {{this.numDownvotes}}
+      Upvoted: {{this.upvoted}}
+      Downvoted: {{this.downvoted}}
+      <ReplyFreetForm :community="this.$store.state.community" :parent="this.freet._id"/>
+    </section>
   </article>
 </template>
 
@@ -96,19 +107,39 @@ export default {
       editing: false, // Whether or not this freet is in edit mode
       draft: this.freet.content, // Potentially-new content for this freet
       alerts: {}, // Displays success/error messages encountered during freet modification
-      parent: null // Parent of the freet
+      parent: null, // Parent of the freet
+      numUpvotes: null, // Number of upvotes on post
+      numDownvotes: null, // Number of downvotes on post
+      upvoted: false, // Whether user upvoted the post
+      downvoted: false, // Whether user downvoted the post
     };
   },
   async mounted() {
     if (this.freet.parent) {
       await this.getParent();
     }
+    await this.getUpvotes();
+    await this.getDownvotes();
+    this.loading = false;
   },
   methods: {
     async getParent() {
       const url = `/api/freets/${this.freet.parent}`;
       const res = await fetch(url).then(async r => r.json());
       this.parent = res;
+    },
+    async getUpvotes() {
+      const url = `/api/upvotes/${this.freet._id}`;
+      const upvotes = await fetch(url).then(async r => r.json());
+      console.log(upvotes);
+      this.numUpvotes = upvotes.length
+      this.upvoted = this.$store.state.username && upvotes.some((upvote) => upvote.upvoter == this.$store.state.username);
+    },
+    async getDownvotes() {
+      const url = `/api/downvotes/${this.freet._id}`;
+      const downvotes = await fetch(url).then(async r => r.json());
+      this.numDownvotes = downvotes.length
+      this.downvoted = this.$store.state.username && downvotes.some((downvote) => downvote.downvoter == this.$store.state.username);
     },
     startEditing() {
       /**

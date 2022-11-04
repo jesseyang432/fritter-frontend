@@ -69,5 +69,6 @@ const FreetSchema = new Schema<Freet>({
   }
 });
 
+
 const FreetModel = model<Freet>('Freet', FreetSchema);
 export default FreetModel;
