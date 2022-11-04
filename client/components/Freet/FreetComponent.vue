@@ -43,6 +43,9 @@
           </button>
         </div>
       </header>
+      <p>
+        Safety level: {{ safety }}
+      </p>
       <p
         v-if="this.parent"
       >
@@ -83,7 +86,7 @@
         <UpvoteForm :freetId="freet._id" :upvoted="upvoted" :numUpvotes="numUpvotes" v-on:upvote="upvote()"/>
         <DownvoteForm :freetId="freet._id" :downvoted="downvoted" :numDownvotes="numDownvotes" v-on:downvote="downvote()"/>
       </section>
-      <ReplyFreetForm :community="this.$store.state.community" :parent="this.freet._id"/>
+      <ReplyFreetForm :community="this.$store.state.community" :parentId="freet._id"/>
     </section>
   </article>
 </template>
@@ -115,10 +118,11 @@ export default {
       upvoted: false, // Whether user upvoted the post
       downvoted: false, // Whether user downvoted the post
       reputation: null, // Reputation of poster in current community
+      safety: null, // The safety level of the post
     };
   },
   async mounted() {
-    await Promise.all([this.getParent(), this.getUpvotes(), this.getDownvotes(), this.getReputation()]);
+    await Promise.all([this.getParent(), this.getUpvotes(), this.getDownvotes(), this.getReputation(), this.getSafety()]);
     // await this.getParent();
     // await this.getUpvotes();
     // await this.getDownvotes();
@@ -170,6 +174,17 @@ export default {
         const url = `api/reputation/?community=${this.$store.state.community}&username=${this.$store.state.username}`;
         const reputation = await fetch(url).then(async r => r.json());
         this.reputation = reputation.reputation;
+      }
+    },
+    async getSafety() {
+      const url = `api/safety/${this.freet._id}`;
+      const safety = await fetch(url).then(async r => r.json());
+      if (safety.safety == 'SFW') {
+        this.safety = 'SFW';
+      } else if (safety.safety == 'NSFW') {
+        this.safety = 'NSFW';
+      } else {
+        this.safety = 'N/A';
       }
     },
     startEditing() {

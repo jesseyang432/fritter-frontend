@@ -27,6 +27,7 @@ class FreetCollection {
    static async addOne(authorId: Types.ObjectId | string, content: string, communityName: string, parentId: Types.ObjectId | string, safetyLevel: string): Promise<HydratedDocument<Freet>> {
     const date = new Date();
     const community = await CommunityCollection.findOneByName(communityName);
+    console.log(parentId);
     let freet;
     if (community) {
       if (parentId) {
@@ -66,6 +67,7 @@ class FreetCollection {
       }
     }
     await freet.save(); // Saves freet to MongoDB
+    console.log(freet.parent);
     await SafetyCollection.addOne(freet._id, safetyLevel);
     return freet.populate('authorId community');
   }
