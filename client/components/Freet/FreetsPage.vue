@@ -47,6 +47,7 @@
           v-for="freet in $store.state.freets"
           :key="freet.id"
           :freet="freet"
+          :parent="freet.parent"
         />
       </section>
       <article

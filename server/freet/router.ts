@@ -113,6 +113,27 @@ router.post(
 );
 
 /**
+ * Get freets by id.
+ *
+ * @name GET /api/freets/:freetId
+ *
+ * @return {FreetResponse} - The freet
+ * @throws {404} - if the freet id is not valid
+ *
+ */
+ router.get(
+  '/:freetId?',
+  [
+    freetValidator.isFreetExists,
+  ],
+  async (req: Request, res: Response) => {
+    const freet = await FreetCollection.findOne(req.params.freetId);
+    const response = util.constructFreetResponse(freet);
+    res.status(200).json(response);
+  }
+);
+
+/**
  * Delete a freet
  *
  * @name DELETE /api/freets/:id

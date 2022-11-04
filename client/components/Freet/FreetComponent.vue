@@ -4,6 +4,7 @@
 <template>
   <article
     class="freet"
+    v-bind:id="this.freet._id"
   >
     <header>
       <h3 class="author">
@@ -36,6 +37,16 @@
         </button>
       </div>
     </header>
+    <p
+      v-if="this.parent"
+    >
+      <b>Replying to </b>
+      <em>
+        <a v-bind:href="'#' + this.parent._id">
+          "{{ this.parent.content.length > 30 ? this.parent.content.slice(0, 30) + "..." : this.parent.content }}"
+        </a>
+      </em>
+    </p>
     <textarea
       v-if="editing"
       class="content"
@@ -61,27 +72,44 @@
         <p>{{ alert }}</p>
       </article>
     </section>
+
+  <CreateFreetForm />
   </article>
 </template>
 
 <script>
+import CreateFreetForm from '@/components/Freet/CreateFreetForm.vue';
+
 export default {
   name: 'FreetComponent',
+  components: {CreateFreetForm},
   props: {
     // Data from the stored freet
     freet: {
       type: Object,
       required: true
-    }
+    },
   },
   data() {
     return {
+      loading: true,
       editing: false, // Whether or not this freet is in edit mode
       draft: this.freet.content, // Potentially-new content for this freet
-      alerts: {} // Displays success/error messages encountered during freet modification
+      alerts: {}, // Displays success/error messages encountered during freet modification
+      parent: null // Parent of the freet
     };
   },
+  async mounted() {
+    if (this.freet.parent) {
+      await this.getParent();
+    }
+  },
   methods: {
+    async getParent() {
+      const url = `/api/freets/${this.freet.parent}`;
+      const res = await fetch(url).then(async r => r.json());
+      this.parent = res;
+    },
     startEditing() {
       /**
        * Enables edit mode on this freet.
