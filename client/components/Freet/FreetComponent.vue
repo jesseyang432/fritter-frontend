@@ -14,7 +14,7 @@
     <section v-else>
       <header>
         <h3 class="author">
-          @{{ freet.author }}
+          @{{ freet.author }} {{ reputation }}
         </h3>
         <div
           v-if="$store.state.username === freet.author"
@@ -79,10 +79,10 @@
         </article>
       </section>
 
-      Num Upvotes: {{this.numUpvotes}}
-      Num Downvotes: {{this.numDownvotes}}
-      Upvoted: {{this.upvoted}}
-      Downvoted: {{this.downvoted}}
+      <section>
+        <UpvoteForm :freetId="freet._id" :upvoted="upvoted" :numUpvotes="numUpvotes" v-on:upvote="upvote()"/>
+        <DownvoteForm :freetId="freet._id" :downvoted="downvoted" :numDownvotes="numDownvotes" v-on:downvote="downvote()"/>
+      </section>
       <ReplyFreetForm :community="this.$store.state.community" :parent="this.freet._id"/>
     </section>
   </article>
@@ -90,10 +90,12 @@
 
 <script>
 import ReplyFreetForm from '@/components/Freet/ReplyFreetForm.vue';
+import UpvoteForm from '@/components/Upvote/UpvoteForm.vue';
+import DownvoteForm from '@/components/Downvote/DownvoteForm.vue';
 
 export default {
   name: 'FreetComponent',
-  components: {ReplyFreetForm},
+  components: {ReplyFreetForm, UpvoteForm, DownvoteForm},
   props: {
     // Data from the stored freet
     freet: {
@@ -112,26 +114,48 @@ export default {
       numDownvotes: null, // Number of downvotes on post
       upvoted: false, // Whether user upvoted the post
       downvoted: false, // Whether user downvoted the post
+      reputation: null, // Reputation of poster in current community
     };
   },
   async mounted() {
-    if (this.freet.parent) {
-      await this.getParent();
-    }
-    await this.getUpvotes();
-    await this.getDownvotes();
+    await Promise.all([this.getParent(), this.getUpvotes(), this.getDownvotes(), this.getReputation()]);
+    // await this.getParent();
+    // await this.getUpvotes();
+    // await this.getDownvotes();
+    // await this.getReputation();
     this.loading = false;
   },
   methods: {
+    upvote() {
+      if (this.downvoted) {
+        this.numDownvotes -= 1;
+        this.downvoted = false;
+      }
+      if (!this.upvoted) {
+        this.numUpvotes += 1;
+        this.upvoted = true;
+      }
+    },
+    downvote() {
+      if (this.upvoted) {
+        this.numUpvotes -= 1;
+        this.upvoted = false;
+      }
+      if (!this.downvoted) {
+        this.numDownvotes += 1;
+        this.downvoted = true;
+      }
+    },
     async getParent() {
-      const url = `/api/freets/${this.freet.parent}`;
-      const res = await fetch(url).then(async r => r.json());
-      this.parent = res;
+      if (this.freet.parent) {
+        const url = `/api/freets/${this.freet.parent}`;
+        const res = await fetch(url).then(async r => r.json());
+        this.parent = res;
+      }
     },
     async getUpvotes() {
       const url = `/api/upvotes/${this.freet._id}`;
       const upvotes = await fetch(url).then(async r => r.json());
-      console.log(upvotes);
       this.numUpvotes = upvotes.length
       this.upvoted = this.$store.state.username && upvotes.some((upvote) => upvote.upvoter == this.$store.state.username);
     },
@@ -140,6 +164,13 @@ export default {
       const downvotes = await fetch(url).then(async r => r.json());
       this.numDownvotes = downvotes.length
       this.downvoted = this.$store.state.username && downvotes.some((downvote) => downvote.downvoter == this.$store.state.username);
+    },
+    async getReputation() {
+      if (this.$store.state.community && this.$store.state.username) {
+        const url = `api/reputation/?community=${this.$store.state.community}&username=${this.$store.state.username}`;
+        const reputation = await fetch(url).then(async r => r.json());
+        this.reputation = reputation.reputation;
+      }
     },
     startEditing() {
       /**
