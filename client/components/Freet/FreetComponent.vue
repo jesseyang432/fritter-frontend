@@ -73,16 +73,16 @@
       </article>
     </section>
 
-  <CreateFreetForm />
+  <ReplyFreetForm :community="this.$store.state.community" :parent="this.freet._id"/>
   </article>
 </template>
 
 <script>
-import CreateFreetForm from '@/components/Freet/CreateFreetForm.vue';
+import ReplyFreetForm from '@/components/Freet/ReplyFreetForm.vue';
 
 export default {
   name: 'FreetComponent',
-  components: {CreateFreetForm},
+  components: {ReplyFreetForm},
   props: {
     // Data from the stored freet
     freet: {

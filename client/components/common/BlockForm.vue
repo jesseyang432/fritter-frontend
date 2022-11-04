@@ -84,7 +84,7 @@ export default {
           });
         if (this.isFreet) {
           optionsEntries.push(['community', this.community]);
-          // optionsEntries.push(['parentId', this.parentId]);
+          optionsEntries.push(['parentId', this.parentId]);
         }
         options.body = JSON.stringify(Object.fromEntries(optionsEntries));
         // options.body = JSON.stringify(Object.fromEntries(

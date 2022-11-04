@@ -4,7 +4,7 @@
 import BlockForm from '@/components/common/BlockForm.vue';
 
 export default {
-  name: 'CreateFreetForm',
+  name: 'ReplyFreetForm',
   mixins: [BlockForm],
   props: {
     community: {
@@ -26,7 +26,7 @@ export default {
         {id: 'content', label: 'Content', value: ''},
         {id: 'safetyLevel', label: 'Safety Level (SFW, NSFW)', value: 'None'},
       ],
-      title: 'Create a freet',
+      title: 'Reply to this freet',
       refreshFreets: true,
       callback: () => {
         const message = 'Successfully created a freet!';

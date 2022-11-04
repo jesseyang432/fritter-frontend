@@ -12,7 +12,7 @@ const store = new Vuex.Store({
     filter: null, // Username to filter shown freets by (null = show all)
     freets: [], // All freets created in the app
     username: null, // Username of the logged in user
-    community: null, // Name of the community currently being viewed
+    community: '', // Name of the community currently being viewed
     communities: [], // All communities
     myCommunities: [], // All communities user is in (empty if not logged in)
     otherCommunities: [], // All communities user is not in
@@ -51,7 +51,7 @@ const store = new Vuex.Store({
     },
     updateCommunity(state, community) {
       /**
-       * Update the current community (null if none)
+       * Update the current community ('' if none)
        * @param community - Name of community
        */
       state.community = community;
