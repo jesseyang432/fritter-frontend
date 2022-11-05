@@ -13,9 +13,14 @@
     </section>
     <section v-else>
       <header>
-        <h3 class="author">
-          @{{ freet.author }} {{ reputation }}
-        </h3>
+        <div class="author-info">
+          <h3 class="author">
+            @{{ freet.author }}
+          </h3>
+          <p v-if="this.$store.state.community" class="author-reputation">
+            Reputation: {{ reputation }}
+          </p>
+        </div>
         <div
           v-if="$store.state.username === freet.author"
           class="actions"
@@ -43,8 +48,8 @@
           </button>
         </div>
       </header>
-      <p>
-        Safety level: {{ safety }}
+      <p v-if="safety" class="safety">
+        <em>{{ safety }}</em>
       </p>
       <p
         v-if="this.parent"
@@ -68,10 +73,26 @@
       >
         {{ freet.content }}
       </p>
-      <p class="info">
-        Posted at {{ freet.dateModified }}
-        <i v-if="freet.edited">(edited)</i>
-      </p>
+
+      <section class="footer">
+        <p class="info">
+          Posted at {{ freet.dateModified }}
+          <i v-if="freet.edited">(edited)</i>
+        </p>
+
+        <section class="reacts">
+          <UpvoteForm :freetId="freet._id" :upvoted="upvoted" :numUpvotes="numUpvotes" v-on:upvote="upvote()"/>
+          <DownvoteForm :freetId="freet._id" :downvoted="downvoted" :numDownvotes="numDownvotes" v-on:downvote="downvote()"/>
+          <button v-if="replying" @click="toggleReply()"><b>Reply</b></button>
+          <button v-else @click="toggleReply()">Reply</button>
+        </section>
+      </section>
+
+
+      <section v-if="replying">
+        <ReplyFreetForm :community="this.$store.state.community" :parentId="freet._id"/>
+      </section>
+
       <section class="alerts">
         <article
           v-for="(status, alert, index) in alerts"
@@ -80,17 +101,6 @@
         >
           <p>{{ alert }}</p>
         </article>
-      </section>
-
-      <section class="reacts">
-        <UpvoteForm :freetId="freet._id" :upvoted="upvoted" :numUpvotes="numUpvotes" v-on:upvote="upvote()"/>
-        <DownvoteForm :freetId="freet._id" :downvoted="downvoted" :numDownvotes="numDownvotes" v-on:downvote="downvote()"/>
-        <button v-if="replying" @click="toggleReply()"><b>Reply</b></button>
-        <button v-else @click="toggleReply()">Reply</button>
-      </section>
-
-      <section v-if="replying">
-        <ReplyFreetForm :community="this.$store.state.community" :parentId="freet._id"/>
       </section>
     </section>
   </article>
@@ -192,9 +202,10 @@ export default {
         this.safety = 'SFW';
       } else if (safety.safety == 'NSFW') {
         this.safety = 'NSFW';
-      } else {
-        this.safety = 'N/A';
       }
+      // else {
+      //   this.safety = 'N/A';
+      // }
     },
     startEditing() {
       /**
@@ -289,9 +300,56 @@ export default {
     position: relative;
 }
 
+header {
+  display: flex;
+  flex-wrap: row nowrap;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+/* .author-info {
+  align-self: flex-start;
+} */
+
+.author-info > * {
+  margin: 0px;
+}
+
+.author-reputation {
+  font-size: small;
+  font-style: italic;
+  margin: 4px 0px;
+}
+
+.actions > button {
+  margin: 0px 2px;
+}
+
+.safety {
+  font-size: medium;
+}
+
+.footer {
+  display: flex;
+  flex-wrap: row nowrap;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.footer > .info {
+  font-size: small;
+  font-style: italic;
+}
 .reacts {
   display: flex;
   flex-direction: row;
   justify-content: flex-end;
+}
+
+.reacts > button {
+  align-self: center;
+  border-radius: 4px;
+  padding: 4px 8px;
+  margin: 4px;
 }
 </style>
