@@ -18,6 +18,14 @@
           :value="field.value"
           @input="field.value = $event.target.value"
         />
+        <select v-else-if="field.id === 'safetyLevel'"
+          :name="field.id"
+          :value="field.value"
+          @input="field.value = $event.target.value">
+          <option value="SFW">SFW</option>
+          <option value="NSFW">NSFW</option>
+          <option value="None" selected>None</option>
+        </select>
         <input
           v-else
           :type="field.id === 'password' ? 'password' : 'text'"

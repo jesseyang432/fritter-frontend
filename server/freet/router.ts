@@ -102,8 +102,6 @@ router.post(
     freetValidator.isValidFreetContent
   ],
   async (req: Request, res: Response) => {
-    console.log(req);
-    console.log(req.body.parentId);
     const userId = (req.session.userId as string) ?? ''; // Will not be an empty string since its validated in isUserLoggedIn
     const freet = await FreetCollection.addOne(userId, req.body.content, req.body.community, req.body.parentId, req.body.safetyLevel);
 

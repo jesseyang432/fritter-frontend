@@ -24,7 +24,7 @@ export default {
       isFreet: true,
       fields: [
         {id: 'content', label: 'Content', value: ''},
-        {id: 'safetyLevel', label: 'Safety Level (SFW, NSFW)', value: 'None'},
+        {id: 'safetyLevel', label: 'Safety Level', value: 'None'},
       ],
       title: 'Create a freet',
       refreshFreets: true,
