@@ -298,6 +298,7 @@ export default {
     margin: 8px;
     padding: 20px;
     position: relative;
+    background-color: #fff;
 }
 
 header {
@@ -323,6 +324,11 @@ header {
 
 .actions > button {
   margin: 0px 2px;
+  border: none;
+  background: none;
+}
+.actions > button:hover {
+  cursor: pointer;
 }
 
 .safety {
@@ -353,8 +359,14 @@ header {
 
 .reacts > button {
   align-self: center;
-  border-radius: 4px;
+  border: none;
+  background: none;
+  /* border-radius: 4px;
   padding: 4px 8px;
-  margin: 4px;
+  margin: 4px; */
+}
+
+.reacts > button:hover {
+  cursor: pointer;
 }
 </style>

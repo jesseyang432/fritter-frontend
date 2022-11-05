@@ -31,7 +31,12 @@ export default {
 <style>
 * {
   box-sizing: border-box;
+  /* color: #fff; */
 }
+
+/* #app {
+  background-color: #298ff5;
+} */
 
 body {
   height: 100vh;
