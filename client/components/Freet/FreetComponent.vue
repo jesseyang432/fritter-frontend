@@ -49,12 +49,12 @@
         </div>
       </header>
       <p v-if="safety" class="safety">
-        <em>{{ safety }}</em>
+        <em>• {{ safety }} •</em>
       </p>
       <p
-        v-if="this.parent"
+        v-if="this.parent" class="replying-to"
       >
-        <b>Replying to </b>
+        — Replying to 
         <em>
           <a v-bind:href="'#' + this.parent._id">
             "{{ this.parent.content.length > 30 ? this.parent.content.slice(0, 30) + "..." : this.parent.content }}"
@@ -327,6 +327,11 @@ header {
 
 .safety {
   font-size: medium;
+}
+
+.replying-to {
+  font-size: smaller;
+  font-style: italic;
 }
 
 .footer {
