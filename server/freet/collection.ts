@@ -128,6 +128,10 @@ class FreetCollection {
    * @return {Promise<Boolean>} - true if the freet has been deleted, false otherwise
    */
   static async deleteOne(freetId: Types.ObjectId | string): Promise<boolean> {
+    const freetReplies = await FreetModel.find({parent: freetId});
+    for (const reply of freetReplies) {
+      await FreetCollection.deleteOne(reply._id);
+    }
     const freet = await FreetModel.deleteOne({_id: freetId});
     return freet !== null;
   }
