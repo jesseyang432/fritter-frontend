@@ -82,11 +82,16 @@
         </article>
       </section>
 
-      <section>
+      <section class="reacts">
         <UpvoteForm :freetId="freet._id" :upvoted="upvoted" :numUpvotes="numUpvotes" v-on:upvote="upvote()"/>
         <DownvoteForm :freetId="freet._id" :downvoted="downvoted" :numDownvotes="numDownvotes" v-on:downvote="downvote()"/>
+        <button v-if="replying" @click="toggleReply()"><b>Reply</b></button>
+        <button v-else @click="toggleReply()">Reply</button>
       </section>
-      <ReplyFreetForm :community="this.$store.state.community" :parentId="freet._id"/>
+
+      <section v-if="replying">
+        <ReplyFreetForm :community="this.$store.state.community" :parentId="freet._id"/>
+      </section>
     </section>
   </article>
 </template>
@@ -113,6 +118,7 @@ export default {
       draft: this.freet.content, // Potentially-new content for this freet
       alerts: {}, // Displays success/error messages encountered during freet modification
       parent: null, // Parent of the freet
+      replying: false, // Whether user is replying to this freet
       numUpvotes: null, // Number of upvotes on post
       numDownvotes: null, // Number of downvotes on post
       upvoted: false, // Whether user upvoted the post
@@ -130,6 +136,9 @@ export default {
     this.loading = false;
   },
   methods: {
+    toggleReply() {
+      this.replying = !this.replying;
+    },
     upvote() {
       if (this.downvoted) {
         this.numDownvotes -= 1;
@@ -274,7 +283,15 @@ export default {
 <style scoped>
 .freet {
     border: 1px solid #111;
+    border-radius: 8px;
+    margin: 8px;
     padding: 20px;
     position: relative;
+}
+
+.reacts {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
 }
 </style>

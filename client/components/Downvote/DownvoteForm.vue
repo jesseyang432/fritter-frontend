@@ -3,7 +3,7 @@
 <template>
   <section>
       <button @click="submit" :disabled="downvoted">
-          Downvote
+        ⬇️
       </button>
       {{numDownvotes}}
   </section>
@@ -86,6 +86,16 @@ methods: {
 
 section {
   margin: 8px;
+}
+
+button {
+  border: none;
+  background: none;
+  font-size: large;
+}
+
+button:hover {
+    cursor: pointer;
 }
 
 </style>

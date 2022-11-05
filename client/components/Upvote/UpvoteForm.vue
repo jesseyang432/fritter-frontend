@@ -3,7 +3,7 @@
 <template>
     <section>
         <button @click="submit" :disabled="upvoted">
-            Upvote
+            ⬆️
         </button>
         {{numUpvotes}}
     </section>
@@ -85,5 +85,15 @@ export default {
 <style scoped>
 section {
     margin: 8px;
+}
+
+button {
+  border: none;
+  background: none;
+  font-size: large;
+}
+
+button:hover {
+    cursor: pointer;
 }
 </style>
