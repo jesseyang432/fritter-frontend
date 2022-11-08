@@ -34,9 +34,20 @@ export default {
   /* color: #fff; */
 }
 
-/* #app {
-  background-color: #298ff5;
-} */
+#app {
+  /* background-color: #298ff5; */
+  font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+}
+
+button {
+    font-family : inherit;
+    font-size: 1em;
+}
+
+select {
+    font-family : inherit;
+    font-size: 1em;
+}
 
 body {
   height: 100vh;
