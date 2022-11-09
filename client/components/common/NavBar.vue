@@ -4,12 +4,14 @@
 
 <template>
   <nav>
-    <div class="left">
-      <img src="../../public/logo.svg">
-      <h1 class="title">
-        Fritter
-      </h1>
-    </div>
+    <router-link to="/">
+      <div class="left">
+        <img src="../../public/logo.svg">
+        <h1 class="title">
+          Fritter
+        </h1>
+      </div>
+    </router-link>
     <div class="right">
       <router-link to="/">
         Home
@@ -47,7 +49,8 @@ nav {
     padding: 1vw 2vw;
     /* background-color: #ccc; */
     /* background-color: skyblue; */
-    background-color: #84cdee;
+    /* background-color: #84cdee; */
+    background-color: #249beb;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -79,6 +82,7 @@ img {
 
 .right a {
     margin-left: 5px;
+    font-size: larger;
 }
 
 .alerts {

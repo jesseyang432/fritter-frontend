@@ -7,9 +7,7 @@
   >
     <header>
       <h3 class="name">
-        <router-link :to="`community/${community.name}`">
         {{ community.name }}
-        </router-link>
       </h3>
     </header>
     <section class="info">
@@ -20,10 +18,16 @@
         Number of Members: {{ community.members.length }}
       </p>
     </section>
-    <section v-if="inCommunity">
+    <section v-if="inCommunity" class="community-modifier">
+      <router-link :to="`community/${community.name}`">
+        <b>
+          Go to Community
+        </b>
+      </router-link>
       <LeaveCommunityForm :communityId="community._id" />
     </section>
-    <section v-else>
+    <section v-else class="community-modifier">
+      <b></b>
       <JoinCommunityForm :communityId="community._id" />
     </section>
     <section class="alerts">
@@ -75,5 +79,12 @@ export default {
     padding: 0px 24px;
     position: relative;
     background-color: #edf7fc;
+}
+
+.community-modifier {
+  display: flex;
+  flex-wrap: row wrap;
+  align-items: center;
+  justify-content: space-between;
 }
 </style>

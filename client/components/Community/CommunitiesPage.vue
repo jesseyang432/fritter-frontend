@@ -5,15 +5,15 @@
       <section class="communities-page">
         <header>
           <div class="left">
-            <h2>
+            <h1>
               Communities
-            </h2>
+            </h1>
           </div>
         </header>
         <section v-if="$store.state.username">
             <CreateCommunityForm />
             <h2>
-              Join or Leave
+              View Communities
             </h2>
             <section
                 v-if="$store.state.communities.length"
