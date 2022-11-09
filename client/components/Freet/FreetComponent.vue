@@ -83,8 +83,8 @@
         <section class="reacts">
           <UpvoteForm :freetId="freet._id" :upvoted="upvoted" :numUpvotes="numUpvotes" v-on:upvote="upvote()"/>
           <DownvoteForm :freetId="freet._id" :downvoted="downvoted" :numDownvotes="numDownvotes" v-on:downvote="downvote()"/>
-          <button v-if="replying" @click="toggleReply()"><b>Reply</b></button>
-          <button v-else @click="toggleReply()">Reply</button>
+          <button v-if="replying" @click="toggleReply()"><b>💬 Reply</b></button>
+          <button v-else @click="toggleReply()">💬 Reply</button>
         </section>
       </section>
 
