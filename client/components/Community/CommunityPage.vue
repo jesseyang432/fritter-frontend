@@ -79,6 +79,11 @@
   </script>
   
   <style scoped>
+
+  main {
+    min-height: 100vh;
+  }
+
   section {
     display: flex;
     flex-direction: column;

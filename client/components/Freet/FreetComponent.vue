@@ -298,7 +298,8 @@ export default {
     margin: 8px;
     padding: 20px;
     position: relative;
-    background-color: #fff;
+    /* background-color: #fff; */
+    background-color:#edf7fc;
 }
 
 header {

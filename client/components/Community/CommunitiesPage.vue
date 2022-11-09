@@ -2,7 +2,7 @@
 
 <template>
     <main>
-      <section>
+      <section class="communities-page">
         <header>
           <div class="left">
             <h2>
@@ -11,10 +11,31 @@
           </div>
         </header>
         <section v-if="$store.state.username">
-            <header>
-            <h3>Welcome @{{ $store.state.username }}</h3>
-            </header>
             <CreateCommunityForm />
+            <h2>
+              Join or Leave
+            </h2>
+            <section
+                v-if="$store.state.communities.length"
+                >
+                <CommunityComponent
+                    v-for="community in $store.state.myCommunities"
+                    :key="community._id"
+                    :community="community"
+                    :inCommunity="true"
+                />
+                <CommunityComponent
+                    v-for="community in $store.state.otherCommunities"
+                    :key="community._id"
+                    :community="community"
+                    :inCommunity="false"
+                />
+            </section>
+            <article
+            v-else
+            >
+            <h3>No communities found.</h3>
+            </article>
         </section>
         <section v-else>
             <article>
@@ -26,28 +47,7 @@
             </h3>
             </article>
         </section>
-        <section
-          v-if="$store.state.communities.length"
-        >
-          <CommunityComponent
-            v-for="community in $store.state.myCommunities"
-            :key="community._id"
-            :community="community"
-            :inCommunity="true"
-          />
-          <CommunityComponent
-            v-for="community in $store.state.otherCommunities"
-            :key="community._id"
-            :community="community"
-            :inCommunity="false"
-          />
-        </section>
-        <article
-          v-else
-        >
-          <h3>No communities found.</h3>
-        </article>
-      </section>
+    </section>
     </main>
   </template>
   
@@ -93,6 +93,10 @@
   section {
     display: flex;
     flex-direction: column;
+  }
+
+  .communities-page {
+    min-height: 100vh;
   }
   
   header, header > * {

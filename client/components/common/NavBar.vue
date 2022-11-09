@@ -45,11 +45,14 @@
 <style scoped>
 nav {
     padding: 1vw 2vw;
-    background-color: #ccc;
+    /* background-color: #ccc; */
+    /* background-color: skyblue; */
+    background-color: #84cdee;
     display: flex;
     justify-content: space-between;
     align-items: center;
     position: relative;
+    border-bottom: 1px solid; 
 }
 
 .title {

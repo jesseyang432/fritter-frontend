@@ -30,3 +30,10 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+
+main {
+  min-height: 100vh;
+}
+</style>

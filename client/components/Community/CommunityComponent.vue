@@ -70,7 +70,10 @@ export default {
 <style scoped>
 .community {
     border: 1px solid #111;
-    padding: 20px;
+    border-radius: 16px;
+    margin: 8px;
+    padding: 0px 24px;
     position: relative;
+    background-color: #edf7fc;
 }
 </style>

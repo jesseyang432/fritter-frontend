@@ -36,6 +36,8 @@ export default {
 
 #app {
   /* background-color: #298ff5; */
+  /* background-color: #dcf0fa; */
+  background-color: #b9e2f5;
   font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
 }
 
