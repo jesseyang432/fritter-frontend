@@ -61,8 +61,14 @@ const store = new Vuex.Store({
        * Request the server for the currently available freets.
        */
       const url = state.community ? `api/freets/community/${state.community}` : (state.filter ? `/api/users/${state.filter}/freets` : '/api/freets');
-      const res = await fetch(url).then(async r => r.json());
-      state.freets = res;
+      const r = await fetch(url);
+      const res = await r.json();
+      // const res = await fetch(url).then(async r => r.json());
+      if (!state.community) {
+        state.freets = res.filter((freet) => !freet.community);
+      } else {
+        state.freets = res;
+      }
     },
     async refreshCommunities(state) {
       /**
